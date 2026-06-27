@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ eSports Hub - AI-Powered Tournament Platform</title>
+    <meta name="description" content="Join tournaments, find teammates, and stay updated with AI-powered eSports news">
+    <meta name="theme-color" content="#0a0e27">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0e27;
+            color: #e0e0e0;
+            overflow-x: hidden;
+        }
+
+        @keyframes particleFloat {
+            0% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+            50% { opacity: 0.8; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(0, 255, 200, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(0, 255, 200, 0.8), 0 0 30px rgba(255, 0, 150, 0.5); }
+        }
+
+        @keyframes slideInDown {
+            from { transform: translateY(-30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .particle-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            animation: particleFloat 8s ease-out forwards;
+        }
+
+        .particle.cyan { background: radial-gradient(circle, #00ffc8, transparent); }
+        .particle.magenta { background: radial-gradient(circle, #ff00ff, transparent); }
+        .particle.lime { background: radial-gradient(circle, #00ff00, transparent); }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(0, 255, 200, 0.2);
+            background: rgba(10, 14, 39, 0.95);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            animation: slideInDown 0.6s ease-out;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #00ffc8, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            cursor: pointer;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        .nav-menu a {
+            color: #e0e0e0;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover {
+            color: #00ffc8;
+        }
+
+        .admin-btn {
+            background: linear-gradient(135deg, #00ffc8, #ff00ff);
+            color: #0a0e27;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .admin-btn:hover {
+            animation: glow 1s ease-in-out;
+            transform: scale(1.05);
+        }
+
+        .hero {
+            text-align: center;
+            padding: 80px 0;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 64px;
+            font-weight: 900;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #00ffc8, #ff00ff, #00ff00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glitch 0.3s ease-in-out;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: #b0b0b0;
+            margin-bottom: 40px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00ffc8, #00ff00);
+            color: #0a0e27;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #00ffc8;
+            border: 2px solid #00ffc8;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 255, 200, 0.4);
+        }
+
+        .game-tabs {
+            display: flex;
+            gap: 15px;
+            margin: 40px 0;
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+
+        .game-tab {
+            padding: 10px 20px;
+            background: rgba(0, 255, 200, 0.1);
+            border: 1px solid rgba(0, 255, 200, 0.3);
+            color: #e0e0e0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .game-tab:hover, .game-tab.active {
+            background: rgba(0, 255, 200, 0.3);
+            border-color: #00ffc8;
+            color: #00ffc8;
+            box-shadow: 0 0 15px rgba(0, 255, 200, 0.5);
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+
+        .card {
+            background: linear-gradient(135deg, rgba(0, 255, 200, 0.05), rgba(255, 0, 150, 0.05));
+            border: 1px solid rgba(0, 255, 200, 0.2);
+            border-radius: 12px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            border-color: #00ffc8;
+            box-shadow: 0 0 20px rgba(0, 255, 200, 0.4);
+            transform: translateY(-8px);
+        }
+
+        .card h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #00ffc8;
+        }
+
+        .card p {
+            font-size: 14px;
+            color: #b0b0b0;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .tag {
+            display: inline-block;
+            background: rgba(0, 255, 200, 0.15);
+            color: #00ffc8;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin: 5px 5px 5px 0;
+            font-weight: 600;
+        }
+
+        .card-btn {
+            padding: 10px 15px;
+            background: rgba(0, 255, 200, 0.2);
+            border: 1px solid rgba(0, 255, 200, 0.3);
+            color: #00ffc8;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            margin-top: 10px;
+        }
+
+        .card-btn:hover {
+            background: rgba(0, 255, 200, 0.4);
+            border-color: #00ffc8;
+        }
+
+        .section-title {
+            font-size: 36px;
+            font-weight: 900;
+            margin: 60px 0 30px 0;
+            background: linear-gradient(135deg, #00ffc8, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: #0f1535;
+            border: 1px solid rgba(0, 255, 200, 0.3);
+            border-radius: 15px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: transparent;
+            border: none;
+            color: #00ffc8;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        .modal h2 {
+            color: #00ffc8;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #b0b0b0;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 255, 200, 0.05);
+            border: 1px solid rgba(0, 255, 200, 0.2);
+            color: #e0e0e0;
+            border-radius: 5px;
+            font-family: inherit;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #00ffc8;
+            box-shadow: 0 0 10px rgba(0, 255, 200, 0.3);
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .admin-panel {
+            position: fixed;
+            right: 0;
+            top: 0;
+            width: 350px;
+            height: 100vh;
+            background: linear-gradient(135deg, #0a0e27, #151a35);
+            border-left: 2px solid #00ffc8;
+            padding: 30px;
+            overflow-y: auto;
+            z-index: 150;
+            transform: translateX(100%);
+            transition: transform 0.4s ease;
+        }
+
+        .admin-panel.active {
+            transform: translateX(0);
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 255, 200, 0.3);
+        }
+
+        .admin-header h2 {
+            color: #00ffc8;
+        }
+
+        .admin-section {
+            margin-bottom: 30px;
+        }
+
+        .admin-section h3 {
+            color: #00ff00;
+            margin-bottom: 15px;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        .news-item {
+            background: rgba(0, 255, 200, 0.05);
+            border-left: 3px solid #00ffc8;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+
+        .news-item h4 {
+            color: #00ffc8;
+            margin-bottom: 8px;
+        }
+
+        .timestamp {
+            color: #808080;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+
+        .page { display: none; }
+        .page.active { display: block; }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid rgba(0, 255, 200, 0.2);
+            color: #808080;
+            margin-top: 60px;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 40px; }
+            .nav-menu { gap: 15px; }
+            .card-grid { grid-template-columns: 1fr; }
+            .admin-panel { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="particle-bg"></div>
+
+    <nav class="container">
+        <div class="logo">⚡ ESPORTS HUB</div>
+        <ul class="nav-menu">
+            <li><a onclick="showPage('home')">Home</a></li>
+            <li><a onclick="showPage('tournaments')">Tournaments</a></li>
+            <li><a onclick="showPage('teams')">Find Teams</a></li>
+            <li><a onclick="showPage('news')">News</a></li>
+        </ul>
+        <button class="admin-btn" onclick="toggleAdminLogin()">🔐 Admin</button>
+    </nav>
+
+    <div class="container">
+        <!-- Admin Login Modal -->
+        <div id="adminLoginModal" class="modal-overlay">
+            <div class="modal">
+                <button class="modal-close" onclick="toggleAdminLogin()">✕</button>
+                <h2>🔐 Admin Access</h2>
+                <div class="form-group">
+                    <label>Enter Admin Code:</label>
+                    <input type="password" id="adminCode" placeholder="Enter code" onkeypress="if(event.key==='Enter') loginAdmin()">
+                </div>
+                <div class="form-buttons">
+                    <button class="btn btn-primary" onclick="loginAdmin()">Login</button>
+                    <button class="btn btn-secondary" onclick="toggleAdminLogin()">Cancel</button>
+                </div>
+                <p style="margin-top: 20px; color: #808080; font-size: 12px;">💡 Hint: Think of the niche + current year</p>
+            </div>
+        </div>
+
+        <!-- Admin Panel -->
+        <div id="adminPanel" class="admin-panel">
+            <div class="admin-header">
+                <h2>⚙️ Admin Control</h2>
+                <button class="modal-close" onclick="logoutAdmin()">✕</button>
+            </div>
+
+            <div class="admin-section">
+                <h3>📋 Add Tournament</h3>
+                <div class="form-group">
+                    <label>Game:</label>
+                    <select id="newGame" style="width: 100%; padding: 8px; background: rgba(0,255,200,0.1); color: #e0e0e0; border: 1px solid rgba(0,255,200,0.2); border-radius: 5px;">
+                        <option>BGMI</option>
+                        <option>Free Fire</option>
+                        <option>CODM</option>
+                        <option>HOK</option>
+                        <option>MLLB</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Tournament Name:</label>
+                    <input type="text" id="newTournamentName" placeholder="Name">
+                </div>
+                <div class="form-group">
+                    <label>Prize Pool:</label>
+                    <input type="text" id="newPrize" placeholder="e.g., ₹50,00,000">
+                </div>
+                <button class="btn btn-primary" onclick="addTournament()" style="width: 100%;">Add Tournament</button>
+            </div>
+
+            <div class="admin-section">
+                <h3>📰 Add News</h3>
+                <div class="form-group">
+                    <label>Headline:</label>
+                    <input type="text" id="newsTitle" placeholder="News headline">
+                </div>
+                <div class="form-group">
+                    <label>Content:</label>
+                    <textarea id="newsContent" placeholder="News content..."></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="addNews()" style="width: 100%;">Add News</button>
+            </div>
+
+            <div class="admin-section">
+                <h3>📊 Stats</h3>
+                <p style="color: #b0b0b0; font-size: 14px;">Tournaments: <span style="color: #00ffc8; font-weight: bold;" id="statTournaments">0</span></p>
+                <p style="color: #b0b0b0; font-size: 14px;">News: <span style="color: #00ffc8; font-weight: bold;" id="statNews">0</span></p>
+            </div>
+        </div>
+
+        <!-- HOME PAGE -->
+        <div id="home" class="page active">
+            <section class="hero">
+                <h1>⚡ ESPORTS REVOLUTION</h1>
+                <p>Join tournaments, find teammates, stay updated with AI-powered news</p>
+                <div class="cta-buttons">
+                    <button class="btn btn-primary" onclick="showPage('tournaments')">🏆 Explore Tournaments</button>
+                    <button class="btn btn-secondary" onclick="showPage('teams')">👥 Find Teammates</button>
+                </div>
+            </section>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h3>🏆 Active Tournaments</h3>
+                    <p style="font-size: 32px; color: #00ffc8; font-weight: bold; margin: 20px 0;" id="countTournaments">3</p>
+                    <p>Compete in multiple games</p>
+                </div>
+                <div class="card">
+                    <h3>💰 Prize Pool</h3>
+                    <p style="font-size: 32px; color: #00ff00; font-weight: bold; margin: 20px 0;">₹1.05 Cr+</p>
+                    <p>Total rewards available</p>
+                </div>
+                <div class="card">
+                    <h3>👥 Active Teams</h3>
+                    <p style="font-size: 32px; color: #ff00ff; font-weight: bold; margin: 20px 0;" id="countTeams">1+</p>
+                    <p>Looking for teammates</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TOURNAMENTS PAGE -->
+        <div id="tournaments" class="page">
+            <h2 class="section-title">🏆 Tournaments</h2>
+            
+            <div class="game-tabs">
+                <button class="game-tab active" onclick="filterGame('all')">ALL</button>
+                <button class="game-tab" onclick="filterGame('BGMI')">BGMI</button>
+                <button class="game-tab" onclick="filterGame('Free Fire')">FREE FIRE</button>
+                <button class="game-tab" onclick="filterGame('CODM')">CODM</button>
+                <button class="game-tab" onclick="filterGame('HOK')">HOK</button>
+                <button class="game-tab" onclick="filterGame('MLLB')">MLLB</button>
+            </div>
+
+            <div id="tournamentsList" class="card-grid"></div>
+        </div>
+
+        <!-- TEAMS PAGE -->
+        <div id="teams" class="page">
+            <h2 class="section-title">👥 Find Teammates</h2>
+            <div id="teamsList" class="card-grid"></div>
+        </div>
+
+        <!-- NEWS PAGE -->
+        <div id="news" class="page">
+            <h2 class="section-title">📰 Latest News</h2>
+            <div id="newsList"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>⚡ ESPORTS HUB 2024 | Built for Champions | Deployed with ❤️</p>
+    </footer>
+
+    <script>
+        // Data
+        let tournaments = [
+            { id: 1, game: 'BGMI', name: 'BGMI Pro League 2024', prize: '₹50,00,000', date: '15 July 2024', status: 'Registration Open' },
+            { id: 2, game: 'Free Fire', name: 'FF India Championship', prize: '₹30,00,000', date: '20 July 2024', status: 'Registration Open' },
+            { id: 3, game: 'CODM', name: 'COD Mobile World Finals', prize: '₹25,00,000', date: '25 July 2024', status: 'Live Now' },
+        ];
+
+        let teams = [
+            { id: 1, game: 'BGMI', name: 'CyberNinjas', members: 3, roles: 'Assault, Support, Scout', discord: 'discord.gg/cyberninjas', instagram: '@cyberninjas_official' },
+        ];
+
+        let newsItems = [
+            { id: 1, title: 'Team SouL claims victory in BGMI National Championship', content: 'In an exciting match, Team SouL dominated the finals with strategic gameplay.', timestamp: 'Today' },
+        ];
+
+        let currentFilter = 'all';
+
+        // Particle animation
+        function createParticle() {
+            const colors = ['cyan', 'magenta', 'lime'];
+            const particle = document.createElement('div');
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            
+            particle.className = `particle ${color}`;
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            const size = Math.random() * 4 + 2;
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+            particle.style.setProperty('--tx', (Math.random() - 0.5) * 200 + 'px');
+            particle.style.setProperty('--ty', (Math.random() - 0.5) * 200 + 'px');
+            
+            document.querySelector('.particle-bg').appendChild(particle);
+            setTimeout(() => particle.remove(), 8000);
+        }
+
+        setInterval(createParticle, 300);
+
+        // Navigation
+        function showPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(page).classList.add('active');
+            
+            if (page === 'tournaments') renderTournaments();
+            if (page === 'teams') renderTeams();
+            if (page === 'news') renderNews();
+        }
+
+        function filterGame(game) {
+            currentFilter = game;
+            document.querySelectorAll('.game-tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            renderTournaments();
+        }
+
+        function renderTournaments() {
+            const filtered = currentFilter === 'all' ? tournaments : tournaments.filter(t => t.game === currentFilter);
+            const html = filtered.map(t => `
+                <div class="card">
+                    <h3>${t.game}</h3>
+                    <h4 style="color: #00ffc8; margin-bottom: 10px;">${t.name}</h4>
+                    <p>${t.date}</p>
+                    <div style="margin: 15px 0;">
+                        <span class="tag">💰 ${t.prize}</span>
+                        <span class="tag">${t.status}</span>
+                    </div>
+                    <button class="card-btn">Learn More</button>
+                    <button class="card-btn">Register</button>
+                </div>
+            `).join('');
+            document.getElementById('tournamentsList').innerHTML = html;
+        }
+
+        function renderTeams() {
+            const html = teams.map(t => `
+                <div class="card">
+                    <h3>${t.game}</h3>
+                    <h4 style="color: #00ffc8; margin-bottom: 10px;">${t.name}</h4>
+                    <p>${t.members} members looking for: ${t.roles}</p>
+                    <p style="margin-top: 15px; font-size: 12px; color: #b0b0b0; border-top: 1px solid rgba(0,255,200,0.2); padding-top: 15px;">
+                        <strong>Connect:</strong><br/>
+                        💬 ${t.discord}<br/>
+                        📸 ${t.instagram}
+                    </p>
+                    <button class="card-btn">View Profile</button>
+                    <button class="card-btn">Join Team</button>
+                </div>
+            `).join('');
+            document.getElementById('teamsList').innerHTML = html;
+        }
+
+        function renderNews() {
+            const html = newsItems.map(n => `
+                <div class="news-item">
+                    <h4>${n.title}</h4>
+                    <p>${n.content}</p>
+                    <p class="timestamp">🤖 AI Generated · ${n.timestamp}</p>
+                </div>
+            `).join('');
+            document.getElementById('newsList').innerHTML = html;
+        }
+
+        // Admin
+        function toggleAdminLogin() {
+            document.getElementById('adminLoginModal').classList.toggle('active');
+        }
+
+        function loginAdmin() {
+            const code = document.getElementById('adminCode').value;
+            if (code === 'ESPORTS2024') {
+                document.getElementById('adminLoginModal').classList.remove('active');
+                document.getElementById('adminPanel').classList.add('active');
+                document.getElementById('adminCode').value = '';
+                updateAdminStats();
+            } else {
+                alert('Invalid code!');
+            }
+        }
+
+        function logoutAdmin() {
+            document.getElementById('adminPanel').classList.remove('active');
+            document.getElementById('adminCode').value = '';
+        }
+
+        function addTournament() {
+            const name = document.getElementById('newTournamentName').value;
+            const prize = document.getElementById('newPrize').value;
+            const game = document.getElementById('newGame').value;
+            
+            if (name && prize) {
+                tournaments.push({
+                    id: tournaments.length + 1,
+                    game: game,
+                    name: name,
+                    prize: prize,
+                    date: new Date().toLocaleDateString(),
+                    status: 'Registration Open'
+                });
+                document.getElementById('newTournamentName').value = '';
+                document.getElementById('newPrize').value = '';
+                updateAdminStats();
+                alert('Tournament added!');
+            }
+        }
+
+        function addNews() {
+            const title = document.getElementById('newsTitle').value;
+            const content = document.getElementById('newsContent').value;
+            
+            if (title) {
+                newsItems.unshift({
+                    id: newsItems.length + 1,
+                    title: title,
+                    content: content || 'Generated news content',
+                    timestamp: 'Just now'
+                });
+                document.getElementById('newsTitle').value = '';
+                document.getElementById('newsContent').value = '';
+                updateAdminStats();
+                alert('News added!');
+            }
+        }
+
+        function updateAdminStats() {
+            document.getElementById('statTournaments').textContent = tournaments.length;
+            document.getElementById('statNews').textContent = newsItems.length;
+            document.getElementById('countTournaments').textContent = tournaments.length;
+            document.getElementById('countTeams').textContent = teams.length;
+        }
+
+        // Initialize
+        updateAdminStats();
+        renderTournaments();
+    </script>
+</body>
+</html>
